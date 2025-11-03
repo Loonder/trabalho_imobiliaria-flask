@@ -1,6 +1,6 @@
 # Arquivo: app.py
 from flask import Flask, render_template, request, Response
-from classes import Apartamento, Casa, Estudio # Importa suas classes
+from classes import Apartamento, Casa, Estudio
 
 app = Flask(__name__)
 
@@ -9,7 +9,7 @@ def _processar_dados_formulario(form_data):
     tipo_imovel = form_data.get('tipo_imovel')
     num_quartos = int(form_data.get('num_quartos', 1))
     tem_garagem = 'tem_garagem' in form_data
-    tem_criancas = 'tem_criancas' in form_data # Checkbox marcado = tem crianças
+    tem_criancas = 'tem_criancas' in form_data 
     num_vagas_estudio = int(form_data.get('num_vagas_estudio', 0))
     parcelas_contrato = int(form_data.get('parcelas_contrato', 5))
 
@@ -38,7 +38,7 @@ def orcamento():
             aluguel_mensal = imovel.calcular_aluguel_mensal()
             valor_parcela_contrato = imovel.VALOR_CONTRATO / parcelas_contrato
 
-            # Dados para enviar para a página de resultado
+
             contexto = {
                 'tipo_imovel': imovel.tipo_imovel,
                 'aluguel_mensal': f'{aluguel_mensal:.2f}',
@@ -63,10 +63,10 @@ def download_csv():
             aluguel_mensal = imovel.calcular_aluguel_mensal()
             valor_parcela_contrato = imovel.VALOR_CONTRATO / parcelas_contrato
             
-            # Chama a nova função para gerar os dados do CSV
+
             csv_data = imovel.gerar_csv_data(aluguel_mensal, valor_parcela_contrato, parcelas_contrato)
             
-            # Retorna o CSV como um download para o usuário
+
             return Response(
                 csv_data,
                 mimetype="text/csv",
