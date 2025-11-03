@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamento Imobiliária R.M.</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin: 1rem;
+        }
+
+        h1 {
+            color: #005a9c; /* Azul profissional */
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box; /* Garante que o padding não quebre o layout */
+            font-size: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background-color: #fdfdfd;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        button {
+            flex: 1; /* Ocupa espaço igual */
+            padding: 0.9rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button[formaction="/orcamento"] {
+            background-color: #007bff; /* Azul primário */
+            color: white;
+        }
+        
+        button[formaction="/download_csv"] {
+            background-color: #6c757d; /* Cinza secundário */
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #eee;
+            margin: 2rem 0;
+        }
+
+        small {
+            font-size: 0.85rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <form method="post">
+            <h1>Calculadora de Orçamento R.M.</h1>
+            
+            <div class="form-group">
+                <label for="tipo_imovel">Tipo de Imóvel:</label>
+                <select name="tipo_imovel" id="tipo_imovel" onchange="atualizarCampos()" required>
+                    <option value="apartamento">Apartamento (R$ 700/1Q)</option>
+                    <option value="casa">Casa (R$ 900/1Q)</option>
+                    <option value="estudio">Estúdio (R$ 1200)</option>
+                </select>
+            </div>
+
+            <div id="campos_apto_casa">
+                <div class="form-group">
+                    <label for="num_quartos">Número de Quartos:</label>
+                    <select name="num_quartos" id="num_quartos">
+                        <option value="1">1 Quarto</option>
+                        <option value="2">2 Quartos (+R$ 200 Ap / +R$ 250 Casa)</option>
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" name="tem_garagem" id="tem_garagem">
+                    <label for="tem_garagem">Incluir Vaga de Garagem (+R$ 300)</label>
+                </div>
+                <div class="form-group checkbox-group" id="campo_criancas">
+                    <input type="checkbox" name="tem_criancas" id="tem_criancas">
+                    <label for="tem_criancas">Possui crianças? (Se não, 5% de desconto no Apto)</label>
+                </div>
+            </div>
+            
+            <div id="campos_estudio" style="display: none;">
+                <div class="form-group">
+                    <label for="num_vagas_estudio">Vagas de Estacionamento para Estúdio:</label>
+                    <input type="number" name="num_vagas_estudio" id="num_vagas_estudio" value="0" min="0">
+                    <small>(Até 2 vagas por R$ 250, +R$ 60 por vaga extra)</small>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="form-group">
+                <label for="parcelas_contrato">Parcelamento do Contrato (Taxa de R$ 2000):</label>
+                <input type="number" name="parcelas_contrato" id="parcelas_contrato" value="5" min="1" max="5" required>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" formaction="/orcamento">Gerar Orçamento</button>
+                <button type="submit" formaction="/download_csv">Baixar Planilha CSV</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function atualizarCampos() {
+            var tipo = document.getElementById('tipo_imovel').value;
+            var aptoCasa = document.getElementById('campos_apto_casa');
+            var estudio = document.getElementById('campos_estudio');
+            var criancas = document.getElementById('campo_criancas');
+
+            if (tipo === 'estudio') {
+                aptoCasa.style.display = 'none';
+                estudio.style.display = 'block';
+            } else {
+                aptoCasa.style.display = 'block';
+                estudio.style.display = 'none';
+                
+                // O campo de crianças só é relevante para apartamento
+                if (tipo === 'apartamento') {
+                    criancas.style.display = 'block';
+                } else {
+                    criancas.style.display = 'none';
+                }
+            }
+        }
+        // Chama a função uma vez no início para configurar os campos
+        atualizarCampos();
+    </script>
+
+</body>
+</html>
