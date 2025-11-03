@@ -1,7 +1,7 @@
 # Arquivo: classes.py
 import csv
 from datetime import date, timedelta
-import io  # Necessário para criar o CSV em memória
+import io 
 
 # Classe Base: Imovel 
 class Imovel:
@@ -19,7 +19,6 @@ class Imovel:
         return adicional
     
     def calcular_aluguel_mensal(self):
-        # Deve ser implementado em todas as classes filhas
         raise NotImplementedError ("Método 'calcular_aluguel_mensal' Deve ser implementado nas subs!")
     
     def gerar_orcamento_terminal(self, parcelas_contrato):
@@ -42,7 +41,7 @@ class Imovel:
 
     def gerar_csv_data(self, aluguel_mensal, parcela_contrato, num_parcelas_contrato):
         """Gera o conteúdo do CSV como uma string para download via web."""
-        output = io.StringIO() # Cria um "arquivo" em memória
+        output = io.StringIO() 
         escritor = csv.writer(output)
         
         data_inicio = date.today() + timedelta(days=30)
@@ -53,12 +52,12 @@ class Imovel:
         for i in range (1, 13): # Loop das 12 parcelas
             data_vencimento = data_inicio + timedelta(days=30 * (i - 1))
             
-            # Logica para colocar o valor das parcelas do contratos nas X primeiras parcelas
+            # Logica para colocar o valor das parcelas do contratoss nas X primeiras parcelas
             valor_contrato_na_parcela = parcela_contrato if i <= num_parcelas_contrato else 0.0
             
             valor_total = aluguel_mensal + valor_contrato_na_parcela
             
-            # Escrevendo a linha
+            # Writer
             escritor.writerow([
                 i,
                 data_vencimento.strftime('%d/%m/%Y'),
@@ -67,7 +66,7 @@ class Imovel:
                 f"{valor_total:.2f}"
             ])
             
-        return output.getvalue() # Retorna a string completa do CSV
+        return output.getvalue() 
 
 
 # 2. Classes filhas (Herança)
