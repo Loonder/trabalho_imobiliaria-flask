@@ -81,7 +81,7 @@
         }
 
         button {
-            flex: 1; /* Ocupa espaço igual */
+            flex: 1; 
             padding: 0.9rem;
             font-size: 1rem;
             font-weight: 600;
@@ -92,12 +92,12 @@
         }
 
         button[formaction="/orcamento"] {
-            background-color: #007bff; /* Azul primário */
+            background-color: #007bff; 
             color: white;
         }
         
         button[formaction="/download_csv"] {
-            background-color: #6c757d; /* Cinza secundário */
+            background-color: #6c757d; 
             color: white;
         }
 
@@ -188,7 +188,7 @@
                 aptoCasa.style.display = 'block';
                 estudio.style.display = 'none';
                 
-                // O campo de crianças só é relevante para apartamento
+
                 if (tipo === 'apartamento') {
                     criancas.style.display = 'block';
                 } else {
@@ -196,7 +196,7 @@
                 }
             }
         }
-        // Chama a função uma vez no início para configurar os campos
+
         atualizarCampos();
     </script>
 
